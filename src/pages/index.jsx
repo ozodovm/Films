@@ -1,6 +1,6 @@
 import NowPlaying from "./NowPlaying";
 import Popular from "./Popular";
 import TopRated from "./TopRated";
-import UpComming from "./UpComming";
+import UpComing from "./UpComing";
 
-export {NowPlaying, Popular, TopRated, UpComming}
+export {NowPlaying, Popular, TopRated, UpComing}

@@ -1,9 +1,9 @@
 import React from 'react'
 
-function UpComming() {
+function UpComing() {
   return (
     <div>UpComming</div>
   )
 }
 
-export default UpComming
+export default UpComing
