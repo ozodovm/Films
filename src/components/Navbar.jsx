@@ -1,16 +1,13 @@
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -22,52 +19,13 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import StarsIcon from '@mui/icons-material/Stars';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import MoveToInboxIcon from '@mui/icons-material/MoveToInbox';
-import { NavLink } from 'react-router-dom';
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '30ch',
-    },
-  },
-}));
+import { Link, NavLink } from 'react-router-dom';
+import CustomSearch from './CustumSearch';
 
 export default function Navbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [searchTerm, setSearchTerm] = React.useState('');
-
+  const [loading, setLoading] = React.useState(true); // Loading holatini yaratamiz
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -88,16 +46,17 @@ export default function Navbar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+  // Ma'lumotlarni yuklash simulyatsiyasi
+  React.useEffect(() => {
+    const fetchData = async () => {
+      // Yuklanish holatini faollashtiramiz
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 soniya kutamiz
+      setLoading(false); // Yuklash tugadi
+    };
 
-  const handleSearchSubmit = () => {
-    if (searchTerm.trim()) {
-      // Qidiruv funksiyasi
-      console.log("Searching for:", searchTerm);
-    }
-  };
+    fetchData();
+  }, []);
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -175,28 +134,28 @@ export default function Navbar() {
 
   const navbarList = [
     {
-      id: 1,
-      to: PATH.nowPlaying,
-      title: "Now Playing",
-      icon: <PlayCircleIcon />
+        id: 1,
+        to: PATH.nowPlaying,
+        title: "Now Playing",
+        icon: <PlayCircleIcon />
     },
     {
-      id: 2,
-      to: PATH.popular,
-      title: "Popular",
-      icon: <StarsIcon />
+        id: 2,
+        to: PATH.popular,
+        title: "Popular",
+        icon: <StarsIcon />
     },
     {
-      id: 3,
-      to: PATH.topRated,
-      title: "Top Rated",
-      icon: <TrendingUpIcon />
+        id: 3,
+        to: PATH.topRated,
+        title: "Top Rated",
+        icon: <TrendingUpIcon />
     },
     {
-      id: 4,
-      to: PATH.upComing,
-      title: "Up Coming",
-      icon: <MoveToInboxIcon />
+        id: 4,
+        to: PATH.upComing,
+        title: "Up Coming",
+        icon: <MoveToInboxIcon />
     },
   ];
 
@@ -213,35 +172,26 @@ export default function Navbar() {
           >
             <MenuIcon />
           </IconButton>
-          <h2 className='text-white text-[33px] font-bold mr-10'>Films</h2>
-          <Box className='hidden sm:flex space-x-4'>
-            {navbarList.map(item => (
-              <NavLink 
-                key={item.id} 
-                to={item.to}
-                className='flex items-center space-x-2 text-white hover:text-gray-300'
-              >
-                {item.icon}
-                <span>{item.title}</span>
-              </NavLink>
-            ))}
-          </Box>
-          <Box sx={{ flexGrow: 1 }} />
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-              value={searchTerm}
-              onChange={handleSearchChange}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') handleSearchSubmit();
-              }}
-            />
-          </Search>
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <Link to="/" className='text-white text-[33px] font-bold mr-10'>Films</Link>
+
+          {loading ? (
+            <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'center' }}>
+              Loading...
+            </Typography>
+          ) : (
+            <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+              {navbarList.map(item => (
+                <NavLink key={item.id} to={item.to} className="flex items-center text-white mx-4 hover:underline">
+                  {item.icon}
+                  <span className="ml-1">{item.title}</span>
+                </NavLink>
+              ))}
+            </Box>
+          )}
+
+          <CustomSearch />
+
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
                 <ShoppingBasketIcon />
